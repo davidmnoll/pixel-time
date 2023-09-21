@@ -1,8 +1,7 @@
 {
-  "name": "pet-shop",
+  "name": "pixel-time",
   "version": "1.0.0",
   "description": "",
-  "main": "truffle.js",
   "directories": {
     "test": "test"
   },
@@ -10,13 +9,15 @@
     "dev": "vite",
     "build": "tsc && vite build",
     "preview": "vite preview",
-    "test": "npx jest"
+    "test": "npx jest",
+    "deploy": "truffle migrate --reset"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@solidjs/router": "^0.8.3",
     "solid-bootstrap": "^1.0.14",
-    "solid-js": "^1.7.8",
+    "solid-js": "^1.7.12",
     "truffle": "^5.11.5",
     "trystero": "^0.13.0"
   },
@@ -24,11 +25,12 @@
     "@ganache/console.log": "^0.4.1",
     "@openzeppelin/contracts": "^4.9.3",
     "@truffle/contract": "^4.6.31",
-    "hardhat": "^2.17.3",
+    "@types/babel__core": "^7.20.2",
     "lite-server": "^2.3.0",
     "solc": "^0.8.21",
     "typescript": "^5.0.2",
     "vite": "^4.4.5",
+    "vite-plugin-node-polyfills": "^0.14.1",
     "vite-plugin-solid": "^2.7.0",
     "web3": "^4.1.2"
   }

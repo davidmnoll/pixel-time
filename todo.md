@@ -2,15 +2,20 @@ Todo:
 ---
 
 
+- finish move to solid.
+  - make pixels show up etc.
+  - make vote info show up
+  - 
+
 - get contract actions working
 - create mock activity script to get video data
+
 - get mock video frames showing
   - use filter event log to get past frames & eras
   - create new canvas /dynamically resize for different sizes of frames
 - get pixels showing in lists
 
 - get chat working
-
 
 - get other pixels showing up (w/filter?)
   - click on canvas to show pixel & neighborhood in "other pixels"

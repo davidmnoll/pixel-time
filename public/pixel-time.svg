@@ -1,0 +1,28 @@
+<svg width="32" height="32" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <!-- Pixel Pattern -->
+  <rect x="0" y="0" width="8" height="8" fill="#B0A08466"/>
+  <rect x="8" y="0" width="8" height="8" fill="#827A6066"/>
+  <rect x="16" y="0" width="8" height="8" fill="#645D5266"/>
+  <rect x="24" y="0" width="8" height="8" fill="#A3948066"/>
+  
+  <rect x="0" y="8" width="8" height="8" fill="#827A6099"/>
+  <rect x="8" y="8" width="8" height="8" fill="#B0A08499"/>
+  <rect x="8" y="8" width="8" height="8" fill="#A3948099"/>
+  <rect x="24" y="8" width="8" height="8" fill="#645D5299"/>
+  
+  <rect x="0" y="16" width="8" height="8" fill="#A39480CC"/>
+  <rect x="8" y="16" width="8" height="8" fill="#645D52CC"/>
+  <rect x="16" y="16" width="8" height="8" fill="#827A60CC"/>
+  <rect x="24" y="16" width="8" height="8" fill="#B0A084CC"/>
+
+  <rect x="0" y="24" width="8" height="8" fill="#645D52FF"/>
+  <rect x="8" y="24" width="8" height="8" fill="#A39480FF"/>
+  <rect x="16" y="24" width="8" height="8" fill="#B0A084FF"/>
+  <rect x="24" y="24" width="8" height="8" fill="#827A60FF"/>
+    <!-- Overlapping "P" and "T" letters -->
+  <text x="12" y="21" font-family="Arial, sans-serif" font-size="20" font-weight="bold" fill="#000C" text-anchor="middle">P</text>
+  <text x="19" y="25" font-family="Arial, sans-serif" font-size="20" font-weight="bold" fill="#000C" text-anchor="middle">T</text>
+
+</svg>
+
+

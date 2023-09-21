@@ -1,15 +1,37 @@
+import { Ref, createEffect, Suspense } from "solid-js";
+import { useContract } from "../providers";
+
 
 declare module "solid-js" {
   namespace JSX {
     interface IntrinsicElements {
-      "canvas-player": any
+      "canvas-player": Partial<CanvasPlayerElement & { ref: Ref<CanvasPlayerElement> }>;
     }
   }
 }
 
 
 export default function CanvasPlayer() {
-  return <canvas-player id="canvas-player" loading></canvas-player>;
+    
+  const data = useContract();
+  
+  let canvas;
+
+  createEffect(() => {
+    console.log('data', data)
+    if (data.ready) {
+      console.log('ready', data)
+      canvas.data = data().framesData;
+      canvas.loading = false;
+    }
+  })
+
+
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <canvas-player ref={canvas} id="canvas-player" loading ></canvas-player>
+    </Suspense>
+  )
 }
 
 const template = `
@@ -31,7 +53,7 @@ const template = `
 `;
 
 /**
- * VideoGenerator - A custom HTML Element that uses a canvas to play and control video-like data.
+ * CanvasPlayer - A custom HTML Element that uses a canvas to play and control video-like data.
  * 
  * @class
  * @extends HTMLElement
@@ -43,16 +65,19 @@ const template = `
  * @property {CanvasRenderingContext2D} _canvas - The canvas rendering context.
  * @property {Array<Array<{x: number, y: number, rgba: {r: number, g: number, b: number, a: number}}>>} _data - The data representing the frames of the video.
  */
-class VideoGenerator extends HTMLElement {
+export class CanvasPlayerElement extends HTMLElement {
   frameDuration = 1000 / 24; // 24fps
   currentFrame = 0;
   isPlaying = false;
+  loading = false;
 
   template = template;
+  _data = [];
+  _canvas;
+  _playInterval;
 
   constructor() {
     super();
-    this._data = [];
 
     this.attachTemplate();
     this._canvas = this.shadowRoot.querySelector('canvas');
@@ -95,9 +120,9 @@ class VideoGenerator extends HTMLElement {
 
     if (this._data.length > 0) {
       this.getVideoFrame(this._data[this.currentFrame]);
-      pauseButton.setAttribute('disabled', true);
-      restartButton.setAttribute('disabled', true);
-      prevButton.setAttribute('disabled', true);
+      pauseButton.setAttribute('disabled', "disabled");
+      restartButton.setAttribute('disabled', "disabled");
+      prevButton.setAttribute('disabled', "disabled");
     }
 
     prevButton.addEventListener('click', this.prevFrame);
@@ -108,10 +133,14 @@ class VideoGenerator extends HTMLElement {
   }
 
   getVideoFrame(frameData) {
+
+    this._canvas.width = frameData.xSize;
+    this._canvas.height = frameData.ySize;
+
     let ctx = this._canvas.getContext('2d');
     const imgData = ctx.createImageData(this._canvas.width, this._canvas.height);
 
-    frameData.forEach(pixel => {
+    frameData.pixels.forEach(pixel => {
       let idx = (pixel.y * this._canvas.width + pixel.x) * 4;
       Object.assign(imgData.data, {
         [idx]: pixel.rgba.r,
@@ -168,9 +197,9 @@ class VideoGenerator extends HTMLElement {
     if (this.currentFrame > 0) {
       this.currentFrame--;
       this.getVideoFrame(this._data[this.currentFrame]);
-      this.shadowRoot.querySelector('#next-button').disabled = false;
+      this.shadowRoot.querySelector('#next-button').removeAttribute("disabled");
     } else {
-      this.shadowRoot.querySelector('#prev-button').disabled = true;
+      this.shadowRoot.querySelector('#prev-button').setAttribute("disabled", "disabled");
     }
   }
 
@@ -178,23 +207,23 @@ class VideoGenerator extends HTMLElement {
     if (this.currentFrame < this._data.length - 1) {
       this.currentFrame++;
       this.getVideoFrame(this._data[this.currentFrame]);
-      this.shadowRoot.querySelector('#restart-button').disabled = false;
-      this.shadowRoot.querySelector('#prev-button').disabled = false;
+      this.shadowRoot.querySelector('#restart-button').removeAttribute("disabled");
+      this.shadowRoot.querySelector('#prev-button').removeAttribute("disabled");
     } else {
-      this.shadowRoot.querySelector('#next-button').disabled = true;
+      this.shadowRoot.querySelector('#next-button').setAttribute("disabled", "disabled");
     }
   }
 
   play() {
     if (!this.isPlaying) {
       this.isPlaying = true;
-      this.shadowRoot.querySelector('#play-button').disabled = true;
-      this.shadowRoot.querySelector('#prev-button').disabled = true;
-      this.shadowRoot.querySelector('#next-button').disabled = true;
-      this.shadowRoot.querySelector('#pause-button').disabled = false;
-      this.shadowRoot.querySelector('#restart-button').disabled = false;
+      this.shadowRoot.querySelector('#play-button').setAttribute("disabled", "disabled");
+      this.shadowRoot.querySelector('#prev-button').setAttribute("disabled", "disabled");
+      this.shadowRoot.querySelector('#next-button').setAttribute("disabled", "disabled");
+      this.shadowRoot.querySelector('#pause-button').removeAttribute("disabled");
+      this.shadowRoot.querySelector('#restart-button').removeAttribute("disabled");
   
-      this.playInterval = setInterval(() => {
+      this._playInterval = setInterval(() => {
         if (this.currentFrame < this._data.length - 1) {
           this.getVideoFrame(this._data[this.currentFrame]);
           this.currentFrame++;
@@ -207,24 +236,24 @@ class VideoGenerator extends HTMLElement {
   
   pause() {
     if (this.isPlaying) {
-      clearInterval(this.playInterval);
+      clearInterval(this._playInterval);
       this.isPlaying = false;
-      this.shadowRoot.querySelector('#pause-button').disabled = true;
-      this.shadowRoot.querySelector('#play-button').disabled = false;
-      this.shadowRoot.querySelector('#prev-button').disabled = false;
-      this.shadowRoot.querySelector('#next-button').disabled = false;
+      this.shadowRoot.querySelector('#pause-button').setAttribute("disabled", "disabled");
+      this.shadowRoot.querySelector('#play-button').removeAttribute("disabled");
+      this.shadowRoot.querySelector('#prev-button').removeAttribute("disabled");
+      this.shadowRoot.querySelector('#next-button').removeAttribute("disabled");
     }
   }
   
   restart() {
-    clearInterval(this.playInterval);
+    clearInterval(this._playInterval);
     this.isPlaying = false;
     this.currentFrame = 0;
     this.getVideoFrame(this._data[this.currentFrame]);
-    this.shadowRoot.querySelector('#pause-button').disabled = true;
-    this.shadowRoot.querySelector('#prev-button').disabled = true;
-    this.shadowRoot.querySelector('#next-button').disabled = false;
-    this.shadowRoot.querySelector('#play-button').disabled = false;
+    this.shadowRoot.querySelector('#pause-button').setAttribute("disabled", "disabled");
+    this.shadowRoot.querySelector('#prev-button').setAttribute("disabled", "disabled");
+    this.shadowRoot.querySelector('#next-button').removeAttribute("disabled");
+    this.shadowRoot.querySelector('#play-button').removeAttribute("disabled");
   }
   
 
@@ -232,4 +261,3 @@ class VideoGenerator extends HTMLElement {
 
 
 
-customElements.define('canvas-player', VideoGenerator);

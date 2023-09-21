@@ -1,28 +1,21 @@
 ## Usage
 
-```bash
-$ npm install # or pnpm install or yarn install
-```
+Pixel time is a toy web3 project where people can collaboratively make an animation.  It could be considered a type of DAO.  Each pixel is an NFT you can control the color of.  With your pixels you can also vote on the future of the canvas by: expanding the canvas, capturing frames, changing the required consensus level, or starting a new era where the canvas will be blanked out and a new animation can begin.
 
-### Learn more on the [Solid Website](https://solidjs.com) and come chat with us on our [Discord](https://discord.com/invite/solidjs)
+Try it out [here]()
 
-## Available Scripts
 
-In the project directory, you can run:
+### Contribution
 
-### `npm run dev`
+If you would like to improve the front end or contract or have suggestions please feel free to add a PR or issue here, it's written with [solid-js]() and [solid-bootstrap]() with [vite]() as the tooling/bundler. 
 
-Runs the app in the development mode.<br>
-Open [http://localhost:5173](http://localhost:5173) to view it in the browser.
+The chat uses [trystero](). 
 
-### `npm run build`
+I'm currently using [truffle]() for the contracts and [web3js]() for the ethereum library, but I plan to eventually move to [ethers]() and [foundry](), so that might be a helpful place to get started
 
-Builds the app for production to the `dist` folder.<br>
-It correctly bundles Solid in production mode and optimizes the build for the best performance.
 
-The build is minified and the filenames include the hashes.<br>
-Your app is ready to be deployed!
 
-## Deployment
 
-Learn more about deploying your application with the [documentations](https://vitejs.dev/guide/static-deploy.html)
+
+
+

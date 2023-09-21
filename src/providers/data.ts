@@ -1,11 +1,11 @@
-getFrames: async function() {
-  console.log('Getting pixels from contract...', App.contractInstance, App.contracts.Pixel, App.contractInstance.address)
+export const fetchFrames =  async (web3, contractInstance) => {
+  console.log('Getting pixels from contract...', contractInstance, contractInstance.address)
 
-  const framesResponse = await App.web3Contract.getPastEvents('FrameCaptured',{
+  const framesResponse = await contractInstance.getPastEvents('FrameCaptured',{
     fromBlock: 0,
     toBlock: 'latest',
   });
-  App.framesData = framesResponse.map(frame => {
+  const framesData = framesResponse.map(frame => {
     console.log('frame', frame)
     const result = web3.eth.abi.decodeLog([
         {
@@ -71,7 +71,7 @@ getFrames: async function() {
           "name": "",
           "type": "tuple[]"
         },'uint256','uint256','uint256','uint256'], frame.data);
-    console.log('token', result[0][0], result)
+    console.log('token', result)
     const pixels = result[0].map((token) => {
       return {
         x: web3.utils.toNumber(token.x),
@@ -96,50 +96,23 @@ getFrames: async function() {
     ];
 
   });
-
-  App.setVideo();
-  return frames
-},
-
-
-setPixelColor: function(x, y, rgba) {
-  App.contractInstance.setPixelColor(x, y, rgba).then(function(result) {
-    console.log('setPixelColor', result);
-    App.getFrames();
-  }).catch(function(err) {
-    console.log(err.message);
-  });
-},
-
-sellPixel: function(x, y, price) {
-  return App.contractInstance.setPixelSalePrice(x, y, price)
-    .then(function(result) {
-      console.log('sellPixel', result);
-      App.getFrames();
-  }).catch(function(err) {
-    console.log(err.message);
-  });
-
-},
-
-toggleVote: function(x, y, topic) {
-  return App.contractInstance.toggleVote(x, y, topic)
-    .then(function(result) {
-      console.log('toggleVote', result);
-      App.getFrames();
-  }).catch(function(err) {
-    console.log(err.message);
-  });
-},
+  
+  return framesData
+}
 
 
 
-getPixels: async function() {
-  const pixelCount = await App.contractInstance.getPixelCount.call();
+export const fetchPixels = async (web3, contractInstance) => {
+  const pixelCount = await contractInstance.getPixelCount.call();
   const pixels = Promise.all(Array(pixelCount).map(async function(_, i){
-    const pixel = await App.contractInstance.getCurrentPixel.call(i);
-    const owner = await App.contractInstance.ownerOf.call(i)
+    const pixel = await contractInstance.getCurrentPixel.call(i);
+    const owner = await contractInstance.ownerOf.call(i)
     return ({...pixel, owner});
   }));
-  App.pixels = await pixels;
-},
+  return await pixels;
+}
+
+export const fetchEras = async (web3, contractInstance) => {
+
+  
+}
