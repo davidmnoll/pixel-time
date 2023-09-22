@@ -2,7 +2,7 @@ import { createContext, splitProps, useContext, createResource, createSignal, Su
 
 import { initContract , initChat } from './init'
 
-const DataContext = createContext();
+const ContractContext = createContext();
 
 
 
@@ -11,55 +11,62 @@ const DataContext = createContext();
 export function ContractProvider(props) {
 
 
-  const [contract, { mutate, refetch }] = createResource(initContract);
+  const [contractValue, setContractValue] = createSignal(null);
 
   createEffect(() => {
-    if (contract.error){
-      console.log('error', contract.error)
-      throw contract.error
-    }
+    initContract().then(contract => {
+      setContractValue(prevValue => contract);
+    })
   })
 
 
   return (
-    <Suspense fallback={<div>Loading...</div>}>
-      <DataContext.Provider value={{contract, mutateContract: mutate, refetchContract: refetch }}>
-        {props.children}
-      </DataContext.Provider>
-    </Suspense>
+    <ContractContext.Provider value={contractValue}>
+      {props.children}
+    </ContractContext.Provider>
   );
 }
 
 // TODO use real type
-export function useContract(): any { return useContext(DataContext); }
+export function useContract(): any { return useContext(ContractContext); }
+
+
+
+
 
 const ChatContext = createContext();
 
 export function ChatProvider(props) {
 
-  const { contract, mutateContract } = useContract();
+  const contract = useContract();
 
+  const [chatMessages, setChatMessages] = createSignal([]);
 
-  const chatHandler = (message, peerId, metadata) => mutateContract(state => {
-    state.chat.push({message, peerId, metadata})
+  const chatHandler = (message, peerId, metadata) => setChatMessages(prev => {
+    // console.log('chatHandler', prev, message)
+    return [...prev, {message, peerId, metadata}]
   })
 
-  // console.log('contract asd', contract().contractAddress)
+  const [chatValue, setChatValue] = createSignal(null);
 
-  const [chat, setChat] = createSignal({
-    messages: []
-  });
-
-  // Use createEffect to initialize chat once contract is ready
   createEffect(() => {
-    if (contract.ready) {
-      const chatInst = initChat(contract().contractAddress, chatHandler);
-      setChat(chatInst);
+    if (contract() && contract().contractAddress) {
+      setChatValue(prevValue => initChat(contract().contractAddress, chatHandler));
     }
-  });
+    // if (chatMessages){
+    //   console.log('chat messages', chatMessages())
+    // }
+  })
+
+  const sendMessage = (ref) => {
+    // console.log('messasge sent', chatMessages, ref.value, chatValue)
+    chatValue ? chatValue().sendChat(ref.value) : console.log("chat not ready");
+    ref.value = '';
+  }
+
 
   return (
-    <ChatContext.Provider value={chat}>
+    <ChatContext.Provider value={{ chat: chatValue, messages: chatMessages, sendMessage}}>
       {props.children}
     </ChatContext.Provider>
   );

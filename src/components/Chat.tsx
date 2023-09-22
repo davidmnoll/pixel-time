@@ -1,41 +1,43 @@
 import { Suspense } from "solid-js";
 import { useChat, ChatProvider } from "../providers";
-import { createEffect } from "solid-js";
+import { createEffect, createSignal } from "solid-js";
 
 export default function ChatWrapper() {
 
   return (
-      <ChatProvider>
-        <Suspense fallback={<div>Loading...</div>}>
-          <Chat />
-        </Suspense>
-      </ChatProvider>
+    <ChatProvider>
+        <Chat />
+    </ChatProvider>
   )
+
 }
 
 
 function Chat(){
+    
+  const { chat, messages, sendMessage } = useChat();
 
-  const chat = useChat();
-  console.log('chat', chat.status)
+  let chatInput;
 
 
+  // createEffect(() => {
+  //   console.log('Messages changed: ', messages());
+  // });
 
   return (
     <div class="tab-pane active" id="chat" role="tabpanel">
       <div id="chat-container">
         <div id="chat-messages">{
-          chat().messages.map(message => (
+          messages() ? messages().map(message => (
             <div class="chat-message">
-              <div class="chat-message-author">{message.author}</div>
-              <div class="chat-message-text">{message.text}</div>
+              <div class="chat-message-author">{JSON.stringify(message)}</div>
             </div>
-          ))
+          )) : <div>Loading...</div>
         }</div>
-        <div id="chat-input-container">
-          <input type="text" id="chat-input" placeholder="Enter your message here..." />
-          <button id="chat-input-submit">Send</button>
-        </div>
+        {chat && <div id="chat-input-container">
+          <input type="text" id="chat-input" placeholder="Enter your message here..." ref={chatInput} />
+          <button id="chat-input-submit" onClick={() => sendMessage(chatInput)} disabled={!chat()}>Send</button>
+        </div>}
       </div>
     </div>
   );

@@ -6,78 +6,12 @@ export const fetchFrames =  async (web3, contractInstance) => {
     toBlock: 'latest',
   });
   const framesData = framesResponse.map(frame => {
-    console.log('frame', frame)
-    const result = web3.eth.abi.decodeLog([
-        {
-          "components": [
-            {
-              "internalType": "uint256",
-              "name": "x",
-              "type": "uint256"
-            },
-            {
-              "internalType": "uint256",
-              "name": "y",
-              "type": "uint256"
-            },
-            {
-              "internalType": "uint8[4]",
-              "name": "rgba",
-              "type": "uint8[4]"
-            },
-            {
-              "internalType": "uint256",
-              "name": "salePrice",
-              "type": "uint256"
-            },
-            {
-              "internalType": "bool",
-              "name": "expandRowVote",
-              "type": "bool"
-            },
-            {
-              "internalType": "bool",
-              "name": "expandColumnVote",
-              "type": "bool"
-            },
-            {
-              "internalType": "bool",
-              "name": "expandFrameVote",
-              "type": "bool"
-            },
-            {
-              "internalType": "bool",
-              "name": "moreToPoolVote",
-              "type": "bool"
-            },
-            {
-              "internalType": "bool",
-              "name": "higherThresholdVote",
-              "type": "bool"
-            },
-            {
-              "internalType": "bool",
-              "name": "newEraVote",
-              "type": "bool"
-            },
-            {
-              "internalType": "bool",
-              "name": "tipVote",
-              "type": "bool"
-            }
-          ],
-          "indexed": false,
-          "internalType": "struct PixelFrames.PixelToken[]",
-          "name": "",
-          "type": "tuple[]"
-        },'uint256','uint256','uint256','uint256'], frame.data);
-    console.log('token', result)
-    const pixels = result[0].map((token) => {
+    const pixels = frame.returnValues[0].map((token) => {
       return {
-        x: web3.utils.toNumber(token.x),
-        y: web3.utils.toNumber(token.y),
-        rgba: token.rgba.map(x => web3.utils.toNumber(x)),
-        salePrice: web3.utils.toNumber(token.salePrice),
+        x: parseInt(token.x),
+        y: parseInt(token.y),
+        rgba: token.rgba.map(x => parseInt(x)),
+        salePrice: parseInt(token.salePrice),
         expandRow: token.expandRowVote,
         expandCol: token.expandColumnVote,
         expandFrame: token.expandFrameVote,
@@ -89,10 +23,10 @@ export const fetchFrames =  async (web3, contractInstance) => {
     })
 
     return [pixels, 
-      web3.utils.toNumber(result[1]), 
-      web3.utils.toNumber(result[2]), 
-      web3.utils.toNumber(result[3]), 
-      web3.utils.toNumber(result[4])
+      frame.returnValues[1], 
+      frame.returnValues[2], 
+      frame.returnValues[3], 
+      frame.returnValues[4]
     ];
 
   });

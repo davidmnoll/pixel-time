@@ -13,7 +13,7 @@ import {
   toggleVote as toggleVoteAction
 } from './actions'
 
-export const initContract = async (mutate, refetch): Promise<AppState> => {
+export const initContract = async (): Promise<AppState> => {
 
   console.log("init")
   const [web3, accounts] = await getWeb3();
@@ -46,6 +46,7 @@ export const initContract = async (mutate, refetch): Promise<AppState> => {
 
 
 export const initChat = (address, chatHandler) => {
+  console.log('here')
   const room = joinRoom({
     appId: address,
   }, 'chat');
@@ -70,11 +71,12 @@ export const initChat = (address, chatHandler) => {
   });
 
   const sendChat = (message) => {
+    console.log('test', message)
     sendChatRaw(message);
     chatHandler(message, 'self', {});
   }
 
-  return {sendChat, blockChatter, unblockChatter, messages: []};
+  return {sendChat, blockChatter, unblockChatter};
 }
 
 export const notInitialized = function (...any) {

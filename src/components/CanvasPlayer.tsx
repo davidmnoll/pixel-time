@@ -13,16 +13,15 @@ declare module "solid-js" {
 
 export default function CanvasPlayer() {
     
-  const data = useContract();
+  const contract = useContract();
   
   let canvas;
 
   createEffect(() => {
-    console.log('data', data)
-    if (data.ready) {
-      console.log('ready', data)
-      canvas.data = data().framesData;
+    if (contract()) {
+      canvas.data = contract().framesData;
       canvas.loading = false;
+      console.log('canvas.data', canvas.data)
     }
   })
 
@@ -134,13 +133,13 @@ export class CanvasPlayerElement extends HTMLElement {
 
   getVideoFrame(frameData) {
 
-    this._canvas.width = frameData.xSize;
-    this._canvas.height = frameData.ySize;
+    this._canvas.width = frameData[1];
+    this._canvas.height = frameData[2];
 
     let ctx = this._canvas.getContext('2d');
     const imgData = ctx.createImageData(this._canvas.width, this._canvas.height);
 
-    frameData.pixels.forEach(pixel => {
+    frameData[0].forEach(pixel => {
       let idx = (pixel.y * this._canvas.width + pixel.x) * 4;
       Object.assign(imgData.data, {
         [idx]: pixel.rgba.r,
