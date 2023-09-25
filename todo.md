@@ -1,14 +1,19 @@
 Todo:
 ---
 
-
-- finish move to solid.
-  - make pixels show up etc.
-  - make vote info show up
+- make pixels show full size on canvas
   - 
 
-- get contract actions working
 - create mock activity script to get video data
+  - data
+    - 1x1 red
+    - 1x2 red & blue (2nd address buys)
+    - 2x2 red blue green (something) (2nd address buys)
+    - 2x3 ...
+    - 3x3 ...
+  - add multiple buyers in
+    - set up metamask for 2nd acct
+  - add votes in later
 
 - get mock video frames showing
   - use filter event log to get past frames & eras

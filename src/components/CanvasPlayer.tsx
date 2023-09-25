@@ -1,4 +1,4 @@
-import { Ref, createEffect, Suspense } from "solid-js";
+import { Ref, createEffect } from "solid-js";
 import { useContract } from "../providers";
 
 
@@ -19,18 +19,15 @@ export default function CanvasPlayer() {
 
   createEffect(() => {
     if (contract()) {
-      canvas.data = contract().framesData;
-      canvas.loading = false;
-      console.log('canvas.data', canvas.data)
+        canvas.data = contract().currentEra;
+        canvas.loading = false;
+        console.log('canvas.data', canvas.data)
+  
     }
   })
 
 
-  return (
-    <Suspense fallback={<div>Loading...</div>}>
-      <canvas-player ref={canvas} id="canvas-player" loading ></canvas-player>
-    </Suspense>
-  )
+  return (<canvas-player ref={canvas} id="canvas-player" loading ></canvas-player>)
 }
 
 const template = `

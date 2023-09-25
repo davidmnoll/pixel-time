@@ -4,7 +4,6 @@ import {joinRoom} from 'trystero'
 import * as ContractData from '../../build/contracts/PixelFrames.json';
 import TruffleContract from '@truffle/contract';
 import { fetchEras } from './data'
-import { fetchFrames } from './data'
 import { fetchPixels } from './data'
 import {
   setPixelColor as setPixelColorAction,
@@ -21,7 +20,10 @@ export const initContract = async (): Promise<AppState> => {
 
 
   const eras = await fetchEras(web3, contractInstance);
-  const framesData = await fetchFrames(web3, contractInstance);
+  const currentEra = eras.pop();
+  const pastEras = [...eras];
+  console.log('eras', eras, eras.length, currentEra)
+
   const pixels = await fetchPixels(web3, contractInstance);
 
   const toggleVote = toggleVoteAction(web3, contractInstance);
@@ -33,8 +35,8 @@ export const initContract = async (): Promise<AppState> => {
 
   return {
     contractAddress,
-    eras,
-    framesData,
+    pastEras,
+    currentEra,
     pixels,
     toggleVote,
     setPixelColor,
