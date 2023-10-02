@@ -26,12 +26,28 @@ export const initContract = async (): Promise<AppState> => {
 
   const pixels = await fetchPixels(web3, contractInstance);
 
+  const pixelMap = pixels.reduce((acc, pixel, index) => {
+    return ({
+      ...acc,
+      [pixel.x]: {
+        ...(acc[pixel.x] || {}),
+        [pixel.y]: index
+      }
+    })
+  }, {});
+
   const toggleVote = toggleVoteAction(web3, contractInstance);
   const setPixelColor = setPixelColorAction(web3, contractInstance);
   const setPixelPrice = setPixelPriceAction(web3, contractInstance);
   const buyPixel = buyPixelAction(web3, contractInstance);
 
   const contractAddress = contractInstance.address;
+
+  await toggleVote(pixelMap[0][0], 0, {
+    from: accounts[0],
+  }).then((res) => {
+    console.log('toggleVote', res)
+  } );
 
   return {
     contractAddress,
@@ -113,5 +129,12 @@ export const getWeb3 = async () => {
     const web3 = new Web3(provider);
     return [web3, web3.eth.accounts];
   }
+
+}
+
+export const postDeployContractScript = async () => {
+  initContract().then((res) => {
+    console.log('initContract', res)
+  });
 
 }

@@ -14,16 +14,16 @@ declare global {
 
 
 
-export const setPixelColor = (web3, contractInstance) => (x, y, rgba) => {
-  contractInstance.setPixelColor(x, y, rgba).then(function(result) {
+export const setPixelColor = (web3, contractInstance) => (id, rgba, options = {}) => {
+  contractInstance.setPixelColor(id, rgba, options).then(function(result) {
     console.log('setPixelColor', result);
   }).catch(function(err) {
     console.log(err.message);
   });
 }
 
-export const setPixelPrice = (web3, contractInstance) => (x, y, price) => {
-  return contractInstance.setPixelSalePrice(x, y, price)
+export const setPixelPrice = (web3, contractInstance) => (id, price, options = {}) => {
+  return contractInstance.setPixelSalePrice(id, price, options)
     .then(function(result) {
       console.log('sellPixel', result);
   }).catch(function(err) {
@@ -32,24 +32,26 @@ export const setPixelPrice = (web3, contractInstance) => (x, y, price) => {
 
 }
 
-export const toggleVote = (web3, contractInstance) => (x, y, topic) => {
-  return contractInstance.toggleVote(x, y, topic)
+export const toggleVote = (web3, contractInstance) => (id, topic, options = {}) => {
+  return contractInstance.toggleVote(id, topic, options)
     .then(function(result) {
       console.log('toggleVote', result);
   }).catch(function(err) {
     console.log(err.message);
+    console.trace();
   });
 }
 
-export const buyPixel = (web3, contractInstance) => async (x, y, price, account, options?) => {
+export const buyPixel = (web3, contractInstance) => async (id, pixelOptions, buyOptions = {}) => {
 
   const thisPixelOptions = await fetchPixels(web3, contractInstance).then(pixels => {
-    return pixels.filter(pixel => pixel.x === x && pixel.y === y)[0];
+    return pixels[id];
   }).then(pixel => {
     return {
       rgba: pixel.rgba,
+      salePrice: pixel.salePrice,
       expandRow: pixel.expandRow,
-      expandCol: pixel.expandColumn,
+      expandCol: pixel.expandCol,
       expandFrame: pixel.expandFrame,
       moreToPool: pixel.moreToPool,
       higherThreshold: pixel.higherThreshold,
@@ -60,24 +62,25 @@ export const buyPixel = (web3, contractInstance) => async (x, y, price, account,
 
   const mergedOptions = {
     ...thisPixelOptions,
-    ...(options || {}),
+    ...(pixelOptions || {}),
   }
 
 
   return contractInstance.buyPixel(
-    x, 
-    y, 
-    options.rgba, 
-    options.expandRow, 
-    options.expandCol, 
-    options.expandFrame, 
-    options.moreToPool, 
-    options.higherThreshold, 
-    options.newEra, 
-    options.tip, 
+    id, 
+    mergedOptions.rgba, 
+    mergedOptions.salePrice, 
+    [
+      mergedOptions.expandRow,
+      mergedOptions.expandCol,
+      mergedOptions.expandFrame,
+      mergedOptions.moreToPool,
+      mergedOptions.higherThreshold,
+      mergedOptions.newEra,
+      mergedOptions.tip,
+    ],
     {
-      from: account, 
-      value: price
+      ...buyOptions
     }).then(function(result) {
       console.log('buyPixel', result);
   }).catch(function(err) {
