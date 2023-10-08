@@ -1,0 +1,32 @@
+name: Rust
+
+on:
+  pull_request:
+    branches: [ "main" ]
+
+env:
+
+  workflow_dispatch:
+
+# Allow only one concurrent deployment, skipping runs queued between the run in-progress and latest queued.
+# However, do NOT cancel in-progress runs as we want to allow these production deployments to complete.
+concurrency:
+  group: ${{ format ('branch-{0}', github.ref_name ) }}
+  cancel-in-progress: true
+
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+    - uses: actions/checkout@v3
+    - uses: actions/setup-node@v3
+      with:
+        node-version: 18
+    - name: Install dependencies
+      run: npm install
+    - name: Run tests
+      run: npm run test

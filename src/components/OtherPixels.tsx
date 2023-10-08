@@ -31,8 +31,8 @@ export default function OtherPixels() {
   const contractData = useContract();
 
 
-  const filterOtherPixels = (pixel) => {
-    return !contractData().accounts.map(x => x.toUpperCase()).includes(pixel.owner.toUpperCase())
+  const filterOtherPixels = (pixel: any) => {
+    return !contractData().accounts.map((x: string) => x.toUpperCase()).includes(pixel.owner.toUpperCase())
   };
   
  
@@ -43,7 +43,7 @@ export default function OtherPixels() {
           Test
         </div>
         {contractData() && <div id="other-pixels-body">
-          {contractData().pixels.filter(filterOtherPixels).map(pixel => (
+          {contractData().pixels.filter(filterOtherPixels).map((pixel: any) => (
             <div class="card mb-3">
               <div class="card-body">
                 {JSON.stringify(pixel)}

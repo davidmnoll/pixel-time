@@ -1,19 +1,20 @@
 
-import { Ref, createEffect} from "solid-js";
+import { createEffect} from "solid-js";
 import { useContract } from "../providers";
+import { CanvasPlayerElement } from "./CanvasPlayer";
 
 export default function History () {
 
   const contract = useContract();
 
   return contract() ? 
-  ((contractData) => contractData.pastEras.map(era => <HistoryPlayer data={era} />))(contract())
+  ((contractData) => contractData.pastEras.map((era: any) => <HistoryPlayer data={era} />))(contract())
   : <div>Loading...</div>
 }
 
-function HistoryPlayer(props) {
+function HistoryPlayer(props: any) {
   
-  let canvas;
+  let canvas: CanvasPlayerElement | null = null;
 
   createEffect(() => {
     if (props.data){

@@ -1,4 +1,4 @@
-import { Suspense, splitProps } from "solid-js";
+// import { Suspense, splitProps } from "solid-js";
 
 import './App.css'
 

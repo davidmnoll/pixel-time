@@ -1,5 +1,5 @@
-import { Web3, providers, AccountObject } from 'web3';
-import type { AppState } from '../types';
+import { providers} from 'web3';
+// import type { AppState } from '../types';
 import { fetchPixels } from './data';
 
 declare global {
@@ -14,35 +14,35 @@ declare global {
 
 
 
-export const setPixelColor = (web3, contractInstance) => (id, rgba, options = {}) => {
+export const setPixelColor = (_web3: any, contractInstance: any) => (id: number, rgba: [number, number, number, number], options: any = {}) => {
   contractInstance.setPixelColor(id, rgba, options).then(function(result) {
     console.log('setPixelColor', result);
-  }).catch(function(err) {
+  }).catch(function(err: Error) {
     console.log(err.message);
   });
 }
 
-export const setPixelPrice = (web3, contractInstance) => (id, price, options = {}) => {
+export const setPixelPrice = (_web3: any, contractInstance: any) => (id: number, price: number, options: any = {}) => {
   return contractInstance.setPixelSalePrice(id, price, options)
     .then(function(result) {
       console.log('sellPixel', result);
-  }).catch(function(err) {
+  }).catch(function(err: Error) {
     console.log(err.message);
   });
 
 }
 
-export const toggleVote = (web3, contractInstance) => (id, topic, options = {}) => {
+export const toggleVote = (_web3: any, contractInstance: any) => (id: number, topic: number, options: any = {}) => {
   return contractInstance.toggleVote(id, topic, options)
     .then(function(result) {
       console.log('toggleVote', result);
-  }).catch(function(err) {
+  }).catch(function(err: Error) {
     console.log(err.message);
     console.trace();
   });
 }
 
-export const buyPixel = (web3, contractInstance) => async (id, pixelOptions, buyOptions = {}) => {
+export const buyPixel = (web3: any, contractInstance: any) => async (id: number, pixelOptions: any, buyOptions: any = {}) => {
 
   const thisPixelOptions = await fetchPixels(web3, contractInstance).then(pixels => {
     return pixels[id];
@@ -83,12 +83,12 @@ export const buyPixel = (web3, contractInstance) => async (id, pixelOptions, buy
       ...buyOptions
     }).then(function(result) {
       console.log('buyPixel', result);
-  }).catch(function(err) {
+  }).catch(function(err: Error) {
     console.log(err.message);
   });
 }
 
-export const seed = async (web3, contractInstance) => {
+export const seed = async (_web3: any, contractInstance: any) => {
   Array(50).forEach(async (_, i) => {
     await contractInstance.toggleVote.call(0, "row");
     await contractInstance.toggleVote.call(0, "column");

@@ -6,7 +6,7 @@ export default function Votes() {
   const contractData = useContract();
 
 
-  const reduceToInfo = (acc, pixel) => {
+  const reduceToInfo = (acc: any, pixel: any) => {
     const poolVotes = acc.poolVotes + pixel.moreToPool
     const thresholdVotes = acc.thresholdVotes + pixel.higherThreshold
     const addRowVotes = acc.addRowVotes + pixel.expandRow

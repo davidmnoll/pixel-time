@@ -1,5 +1,5 @@
 
-import { createEffect } from "solid-js";
+// import { createEffect } from "solid-js";
 import { useContract } from "../providers";
 
 
@@ -38,8 +38,8 @@ export default function MyPixels() {
   const contractData = useContract();
 
 
-  const filterMyPixels = (pixel) => {
-    return contractData().accounts.map(x => x.toUpperCase()).includes(pixel.owner.toUpperCase())
+  const filterMyPixels = (pixel: any) => {
+    return contractData().accounts.map((x: string) => x.toUpperCase()).includes(pixel.owner.toUpperCase())
   };
   
 
@@ -49,7 +49,7 @@ export default function MyPixels() {
           Test
         </div>
           {contractData() && <div id="my-pixels-body">
-            {contractData().pixels.filter(filterMyPixels).map(pixel => (
+            {contractData().pixels.filter(filterMyPixels).map((pixel: any) => (
               <div class="card mb-3">
                 <div class="card-body">
                   {JSON.stringify(pixel)}

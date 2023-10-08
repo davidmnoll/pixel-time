@@ -1,6 +1,6 @@
-import { Suspense } from "solid-js";
+// import { Suspense } from "solid-js";
 import { useChat, ChatProvider } from "../providers";
-import { createEffect, createSignal } from "solid-js";
+// import { createEffect, createSignal } from "solid-js";
 
 export default function ChatWrapper() {
 
@@ -17,7 +17,7 @@ function Chat(){
     
   const { chat, messages, sendMessage } = useChat();
 
-  let chatInput;
+  let chatInput: HTMLInputElement | null = null;
 
 
   // createEffect(() => {
@@ -28,7 +28,7 @@ function Chat(){
     <div class="tab-pane active" id="chat" role="tabpanel">
       <div id="chat-container">
         <div id="chat-messages">{
-          messages() ? messages().map(message => (
+          messages() ? messages().map((message: any) => (
             <div class="chat-message">
               <div class="chat-message-author">{JSON.stringify(message)}</div>
             </div>
