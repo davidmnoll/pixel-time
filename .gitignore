@@ -13,7 +13,8 @@ dist-ssr
 *.local
 build
 build/*
-contracts/
+contracts/.deps
+
 out/
 
 # Editor directories and files
